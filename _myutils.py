@@ -282,6 +282,20 @@ def remove_dups(some_list, comp_item_index=None):
     return filt_list
 
 
+def flatten(list_):
+    """ Return flat list with all nested items in 'list_' (recursive)."""
+    #return [flatten(l) for l in itertools.chain.from_iterable(list_))
+    def flat_rec(l):
+        for e in l:
+            if isinstance(e, list):
+                for se in flat_rec(e):
+                    yield se
+            else:
+                yield e
+
+    return list(flat_rec(list_))
+
+
 def is_executable(exe_name_str):
     """Return true if executable 'exe_name_str' can be executed, else false."""
     devnull = open(os.devnull, 'w')
