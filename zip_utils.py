@@ -26,13 +26,10 @@ def open_archive(arch_path_str, verbose=False):
         # bug in python zip lib: can't open empty archive
         if os.path.getsize(arch_path_str) <= 22:
             return None
-        archive = zipfile.ZipFile(arch_path_str, 'r')
+        return zipfile.ZipFile(arch_path_str, 'r')
     except IOError:
         logging.warning('could not open archive ' + os.path.abspath(arch_path_str))
         return None
-    else:
-        return archive
-
 
 def get_from_archive(archive, filename):
     """Read file from archive.
@@ -57,11 +54,13 @@ def add_to_archive(archive, file_str, file_is_path=True, name=None):
        file_str: path to file or string to be written to file.  If 'file_str' is not a path
        'file_is_path' must be set to "False".
        name: will be used to set the name of the file in archive. It can be a
-       string or ZipInfo instance. If not specified and 'file_' is a string to be written ValueError is raised.
+       string or ZipInfo instance. If not specified and 'file_' is a string to be written a
+       ValueError is raised.
     """
     if not file_is_path and name is None:
         raise ValueError('No filename given (can not add to archive)')
-    archive = zipfile.ZipFile(archive, 'a', zipfile.ZIP_DEFLATED) if type(archive) is str else archive
+    if type(archive) is str:
+        archive = zipfile.ZipFile(archive, 'a', zipfile.ZIP_DEFLATED)
     if type(name) is zipfile.ZipInfo:
         arch_filename_str = name.filename
     elif type(name) is str:

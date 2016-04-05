@@ -21,7 +21,7 @@ import string
 
 
 def md5sum(str_):
-    """Calculate the md5sum in hex of a string"""
+    """Return the md5 hash of a string in hex."""
     sanitized_str = ''.join([c for c in str_ if ord(c) < 128])
     md5sum_str = hashlib.md5(sanitized_str).hexdigest()
     return md5sum_str
@@ -45,28 +45,30 @@ def load_object(path_str):
     try:
         obj = getattr(mod, obj_str)
     except AttributeError:
-        raise NameError("Error loading object '%s' doesn't define any object named '%s'" % (obj_str, mod_str))
+        raise NameError("Error loading object '%s' doesn't define any"
+        " object named ""'%s'" % (obj_str, mod_str))
     return obj
 
 
 def remove_dups(some_list, comp_item_index=None):
-    """Remove duplicated items in list, preserves order.
+    """Remove duplicate items in list, preserves order.
        If 'comp_item' is given 'some_list' is treated as list of sequences, the duplicates
        will be found by comparing the items at 'comp_item_index' position in the sequences.
     """
     seen = set()
     seen_add = seen.add
     if comp_item_index is None:
-        filt_list = [x for x in some_list if x not in seen and not seen_add(x)]
+        filt_list = [x for x in some_list
+                     if x not in seen and not seen_add(x)]
     else:
-        filt_list = [t for t in some_list if t[comp_item_index] not in seen and not seen_add(t[comp_item_index])]
-    print('removed ' + str(len(some_list) - len(filt_list)) + ' duplicates')
+        filt_list = [t for t in some_list
+                     if t[comp_item_index] not in seen and not seen_add(t[comp_item_index])]
+    logging.debug('removed ' + str(len(some_list) - len(filt_list)) + ' duplicates')
     return filt_list
 
 
 def flatten(list_):
     """ Return flat list with all nested items in 'list_' (recursive)."""
-    #return [flatten(l) for l in itertools.chain.from_iterable(list_))
     def flat_rec(l):
         for e in l:
             if isinstance(e, list):

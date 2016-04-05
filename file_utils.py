@@ -47,8 +47,8 @@ def _rename(file_path_str):
 def move(src_str, dest_str, rename=False, into_folder=True):
     """Move an existing file or directory from 'src_str' to 'dest_str'.
        If 'rename' is true and the destination exists already the target will be renamed.
-       'into_folder' is used for that to determine if source should be moved into a destination directory or source
-       should be renamed instead.
+       'into_folder' is used for that to determine if source should be moved into a destination
+       directory or source should be renamed instead.
     """
     if not os.path.exists(src_str):
         logging.warning('does not exist (can not move): ' + src_str)
@@ -75,8 +75,9 @@ def move(src_str, dest_str, rename=False, into_folder=True):
 
 def write_file(file_path_str, str_, append=False, rename=True, verbose=True):
     """Write string to file.
-       If 'append' is false an existing file will not be overwritten. Instead the existing file will be renamed.
-       If 'append' is true the string is appended to file if it already exists, the file is created otherwise.
+       If 'append' is false an existing file will not be overwritten. Instead the existing file
+       will be renamed. If 'append' is true the string is appended to file if it already exists,
+       the file is created otherwise.
        Returns the file path the file was written to.
     """
     dir_name, fname = os.path.split(file_path_str)
@@ -90,30 +91,35 @@ def write_file(file_path_str, str_, append=False, rename=True, verbose=True):
     if dir_name and not os.path.isdir(dir_name):
         logging.warning('directory does not exist (can not create file)): ' + file_path_str)
         return None
-    file_ = open(file_path_str, 'a') if append else open(file_path_str, 'w')
-    file_.write(str_)
-    file_.close()
+    mode = 'a' if append else 'w'
+    with open(file_path_str, mode) as f:
+        f.write(str_)
     if verbose:
         logging.info("wrote " + str(len(str_)) + " bytes to file: " + file_path_str)
     return file_path_str
 
 
-def read_file(file_):
-    """Read content of file
-       file_: either path to file or a file (like) object.
-       Return content of file as string or 'None' if file does not exist.
+def read_file(file_path):
+    """Read content of file.
+       Return content of file as string or 'None' if reading failed.
     """
-    if type(file_) is str:
-        try:
-            file_ = open(file_, 'r')
-        except IOError:
-            logging.warning('file does not exist (can not open): ' + file_)
-            return None
-        cont_str = file_.read()
-        file_.close()
-    else:
-        cont_str = file_.read()
-    return cont_str
+    try:
+        with open(file_path, 'r') as f:
+            return f.read()
+    except IOError:
+        logging.warning('can not read file: ' + file_path)
+        return None
+
+
+def read(f):
+    """Read content of file.
+       Return content of file as string or 'None' if reading failed.
+    """
+    try:
+        return f.read()
+    except IOError:
+        logging.warning('can not read from file: ' + f)
+        return None
 
 
 def read_file_lines(file_):
