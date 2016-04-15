@@ -1,5 +1,3 @@
-
-
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -14,6 +12,7 @@ import logging
 import hashlib
 import random
 import importlib
+import itertools
 import os
 import subprocess
 import fractions
@@ -68,7 +67,7 @@ def remove_dups(some_list, comp_item_index=None):
 
 
 def flatten(list_):
-    """ Return flat list with all nested items in 'list_' (recursive)."""
+    """Return flat list with all nested items in 'list_' (recursive)."""
     def flat_rec(l):
         for e in l:
             if isinstance(e, list):
@@ -78,6 +77,19 @@ def flatten(list_):
                 yield e
 
     return list(flat_rec(list_))
+
+
+def window(seq, n=2):
+    """Returns a sliding window of width n over data from the iterable.
+       Source: https://docs.python.org/release/2.3.5/lib/itertools-example.html
+    """
+    it = iter(seq)
+    result = tuple(itertools.islice(it, n))
+    if len(result) == n:
+        yield result
+    for elem in it:
+        result = result[1:] + (elem,)
+        yield result
 
 
 def is_executable(exe_name_str):
