@@ -49,6 +49,15 @@ def load_object(path_str):
     return obj
 
 
+def split(iterable, delimiter):
+    """Yield elements in 'iterable' grouped in lists divided by the elements equal to 'delimiter'
+       (without the delimiter elements itself). Empty groups are ommited.
+    """
+    for k, g in itertools.groupby(iterable, lambda x: x == delimiter):
+        if not k:
+            yield list(g)
+
+
 def remove_dups(some_list, comp_item_index=None):
     """Remove duplicate items in list, preserves order.
        If 'comp_item' is given 'some_list' is treated as list of sequences, the duplicates
