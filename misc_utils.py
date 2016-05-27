@@ -58,21 +58,25 @@ def split(iterable, delimiter):
             yield list(g)
 
 
-def remove_dups(some_list, comp_item_index=None):
+def filter_duplicates(some_list, comp_item_index=None, verbose=False):
     """Remove duplicate items in list, preserves order.
-       If 'comp_item' is given 'some_list' is treated as list of sequences, the duplicates
+       If 'comp_item' is given, 'some_list' is treated as list of sequences, the duplicates
        will be found by comparing the items at 'comp_item_index' position in the sequences.
     """
-    seen = set()
-    seen_add = seen.add
-    if comp_item_index is None:
-        filt_list = [x for x in some_list
-                     if x not in seen and not seen_add(x)]
-    else:
-        filt_list = [t for t in some_list
-                     if t[comp_item_index] not in seen and not seen_add(t[comp_item_index])]
-    logging.debug('removed ' + str(len(some_list) - len(filt_list)) + ' duplicates')
-    return filt_list
+    seen_set = set()
+    seen_add = seen_set.add
+    filter_list = []
+    for element in some_list:
+        compare_element = element if comp_item_index is None else element[comp_item_index]
+        if compare_element not in seen_set:
+            filter_list.append(element)
+            seen_add(compare_element)
+        elif verbose:
+            logging.warning('duplicate item: '+str(element))
+    diff_len = len(some_list) - len(filter_list)
+    if diff_len:
+        logging.debug('removed ' + str(diff_len) + ' duplicates')
+    return filter_list
 
 
 def flatten(list_):
