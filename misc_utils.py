@@ -15,6 +15,7 @@ import importlib
 import itertools
 import os
 import subprocess
+import functools
 import fractions
 import string
 
@@ -121,8 +122,10 @@ def is_executable(exe_name_str):
 
 def nCk(n, k):
     """Return the binomial coefficient of n and k"""
-    mul = lambda x, y: x * y
-    return int(reduce(mul, (fractions.Fraction(n - i, i + 1) for i in range(k)), 1))
+    return int(functools.reduce(
+            lambda x, y: x * y,
+            (fractions.Fraction(n - i, i + 1) for i in range(k)),
+            1))
 
 
 def rand_str(n=6, chars=string.ascii_uppercase + string.digits):
