@@ -106,6 +106,18 @@ def window(seq, n=2):
         yield result
 
 
+def join_if(seq, condition, delimiter=''):
+    """Return an iterator with elements in 'seq'. Element that are 'condition' are
+    joined with its predecessor using 'delimiter'.
+    """
+    if not seq:
+        return seq
+
+    rev = reversed(tuple(window(seq)))
+    g = (delimiter.join((a, b)) if b == condition else a for a, b in rev if a != condition)
+    return itertools.chain(reversed(tuple(g)), [seq[-1]])
+
+
 def is_executable(exe_name_str):
     """Return true if executable 'exe_name_str' can be executed, else false."""
     devnull = open(os.devnull, 'w')
